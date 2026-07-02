@@ -61,14 +61,20 @@ class ProductosIndex extends Component
     {
         $this->validate();
 
+        if ($this->productoId) {
+            $this->authorize('update', Producto::findOrFail($this->productoId));
+        } else {
+            $this->authorize('create', Producto::class);
+        }
+
         Producto::updateOrCreate(
             ['id' => $this->productoId],
             [
-                'nombre' => $this->nombre,
+                'nombre'      => $this->nombre,
                 'descripcion' => $this->descripcion,
-                'precio' => $this->precio,
-                'stock' => $this->stock,
-                'categoria' => $this->categoria,
+                'precio'      => $this->precio,
+                'stock'       => $this->stock,
+                'categoria'   => $this->categoria,
             ]
         );
 
@@ -79,13 +85,15 @@ class ProductosIndex extends Component
 
     public function eliminar($id)
     {
-        Producto::findOrFail($id)->delete();
+        $producto = Producto::findOrFail($id);
+        $this->authorize('delete', $producto);
+        $producto->delete();
         session()->flash('mensaje', 'Producto eliminado.');
     }
 
     public function render()
     {
-        $productos = Producto::where('nombre', 'like', '%'.$this->search.'%')
+        $productos = Producto::where('nombre', 'like', '%' . $this->search . '%')
             ->paginate(10);
 
         return view('livewire.productos.productos-index', compact('productos'))

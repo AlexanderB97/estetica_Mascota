@@ -62,14 +62,20 @@ class MascotasIndex extends Component
     {
         $this->validate();
 
+        if ($this->mascotaId) {
+            $this->authorize('update', Mascota::findOrFail($this->mascotaId));
+        } else {
+            $this->authorize('create', Mascota::class);
+        }
+
         Mascota::updateOrCreate(
             ['id' => $this->mascotaId],
             [
-                'nombre' => $this->nombre,
-                'especie' => $this->especie,
-                'raza' => $this->raza,
+                'nombre'           => $this->nombre,
+                'especie'          => $this->especie,
+                'raza'             => $this->raza,
                 'fecha_nacimiento' => $this->fecha_nacimiento,
-                'cliente_id' => $this->cliente_id,
+                'cliente_id'       => $this->cliente_id,
             ]
         );
 
@@ -80,14 +86,16 @@ class MascotasIndex extends Component
 
     public function eliminar($id)
     {
-        Mascota::findOrFail($id)->delete();
+        $mascota = Mascota::findOrFail($id);
+        $this->authorize('delete', $mascota);
+        $mascota->delete();
         session()->flash('mensaje', 'Mascota eliminada.');
     }
 
     public function render()
     {
         $mascotas = Mascota::with('cliente')
-            ->where('nombre', 'like', '%'.$this->search.'%')
+            ->where('nombre', 'like', '%' . $this->search . '%')
             ->paginate(10);
 
         $clientes = User::orderBy('name')->get();

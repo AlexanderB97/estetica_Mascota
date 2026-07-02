@@ -1,4 +1,6 @@
+
 <div class="p-6">
+    
     <div class="flex justify-between items-center mb-6">
         <div>
             <h1 class="text-3xl font-bold text-purple-700"><i class="fa-solid fa-box mr-2"></i>Productos</h1>
