@@ -69,15 +69,21 @@ class TurnosIndex extends Component
     {
         $this->validate();
 
+        if ($this->turnoId) {
+            $this->authorize('update', Turno::findOrFail($this->turnoId));
+        } else {
+            $this->authorize('create', Turno::class);
+        }
+
         Turno::updateOrCreate(
             ['id' => $this->turnoId],
             [
-                'mascota_id' => $this->mascota_id,
+                'mascota_id'  => $this->mascota_id,
                 'servicio_id' => $this->servicio_id,
-                'usuario_id' => $this->usuario_id,
-                'fecha_hora' => $this->fecha_hora,
-                'estado' => $this->estado,
-                'notas' => $this->notas,
+                'usuario_id'  => $this->usuario_id,
+                'fecha_hora'  => $this->fecha_hora,
+                'estado'      => $this->estado,
+                'notas'       => $this->notas,
             ]
         );
 
@@ -88,7 +94,9 @@ class TurnosIndex extends Component
 
     public function eliminar($id)
     {
-        Turno::findOrFail($id)->delete();
+        $turno = Turno::findOrFail($id);
+        $this->authorize('delete', $turno);
+        $turno->delete();
         session()->flash('mensaje', 'Turno eliminado.');
     }
 
@@ -96,16 +104,16 @@ class TurnosIndex extends Component
     {
         $turnos = Turno::with(['mascota', 'servicio', 'usuario'])
             ->whereHas('mascota', function ($q) {
-                $q->where('nombre', 'like', '%'.$this->search.'%');
+                $q->where('nombre', 'like', '%' . $this->search . '%');
             })
             ->orWhereHas('servicio', function ($q) {
-                $q->where('nombre', 'like', '%'.$this->search.'%');
+                $q->where('nombre', 'like', '%' . $this->search . '%');
             })
             ->paginate(10);
 
-        $mascotas = Mascota::orderBy('nombre')->get();
+        $mascotas  = Mascota::orderBy('nombre')->get();
         $servicios = Servicio::orderBy('nombre')->get();
-        $usuarios = User::orderBy('name')->get();
+        $usuarios  = User::orderBy('name')->get();
 
         return view('livewire.turnos.turnos-index', compact('turnos', 'mascotas', 'servicios', 'usuarios'))
             ->layout('components.layouts.app');

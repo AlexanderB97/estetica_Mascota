@@ -98,21 +98,27 @@ class VentasIndex extends Component
     {
         $this->validate();
 
+        if ($this->ventaId) {
+            $this->authorize('update', Venta::findOrFail($this->ventaId));
+        } else {
+            $this->authorize('create', Venta::class);
+        }
+
         DB::transaction(function () {
             $venta = Venta::updateOrCreate(
                 ['id' => $this->ventaId],
                 [
                     'usuario_id' => auth()->id(),
-                    'estado' => $this->estado,
-                    'total' => $this->total,
+                    'estado'     => $this->estado,
+                    'total'      => $this->total,
                 ]
             );
 
             $venta->items()->delete();
             foreach ($this->items as $item) {
                 $venta->items()->create([
-                    'producto_id' => $item['producto_id'],
-                    'cantidad' => $item['cantidad'],
+                    'producto_id'     => $item['producto_id'],
+                    'cantidad'        => $item['cantidad'],
                     'precio_unitario' => $item['precio'],
                 ]);
             }
@@ -122,16 +128,18 @@ class VentasIndex extends Component
         session()->flash('mensaje', 'Venta guardada correctamente.');
     }
 
+    public function eliminar($id)
+    {
+        $venta = Venta::findOrFail($id);
+        $this->authorize('delete', $venta);
+        $venta->delete();
+        session()->flash('mensaje', 'Venta eliminada.');
+    }
+
     public function verDetalle($id)
     {
         $this->ventaDetalle = Venta::with(['items.producto', 'usuario'])->findOrFail($id);
         $this->modalDetalle = true;
-    }
-
-    public function eliminar($id)
-    {
-        Venta::findOrFail($id)->delete();
-        session()->flash('mensaje', 'Venta eliminada.');
     }
 
     public function render()
