@@ -11,17 +11,28 @@ class MascotasIndex extends Component
 {
     use WithPagination;
 
-    public $nombre, $especie, $raza, $fecha_nacimiento, $cliente_id;
+    public $nombre;
+
+    public $especie;
+
+    public $raza;
+
+    public $fecha_nacimiento;
+
+    public $cliente_id;
+
     public $mascotaId;
+
     public $modal = false;
+
     public $search = '';
 
     protected $rules = [
-        'nombre'           => 'required|string|max:255',
-        'especie'          => 'required|string|max:255',
-        'raza'             => 'nullable|string|max:255',
+        'nombre' => 'required|string|max:255',
+        'especie' => 'required|string|max:255',
+        'raza' => 'nullable|string|max:255',
         'fecha_nacimiento' => 'nullable|date',
-        'cliente_id'       => 'required|exists:users,id',
+        'cliente_id' => 'required|exists:users,id',
     ];
 
     public function updatingSearch()
@@ -38,13 +49,13 @@ class MascotasIndex extends Component
     public function editar($id)
     {
         $mascota = Mascota::findOrFail($id);
-        $this->mascotaId        = $mascota->id;
-        $this->nombre           = $mascota->nombre;
-        $this->especie          = $mascota->especie;
-        $this->raza             = $mascota->raza;
+        $this->mascotaId = $mascota->id;
+        $this->nombre = $mascota->nombre;
+        $this->especie = $mascota->especie;
+        $this->raza = $mascota->raza;
         $this->fecha_nacimiento = $mascota->fecha_nacimiento;
-        $this->cliente_id       = $mascota->cliente_id;
-        $this->modal            = true;
+        $this->cliente_id = $mascota->cliente_id;
+        $this->modal = true;
     }
 
     public function guardar()
@@ -54,11 +65,11 @@ class MascotasIndex extends Component
         Mascota::updateOrCreate(
             ['id' => $this->mascotaId],
             [
-                'nombre'           => $this->nombre,
-                'especie'          => $this->especie,
-                'raza'             => $this->raza,
+                'nombre' => $this->nombre,
+                'especie' => $this->especie,
+                'raza' => $this->raza,
                 'fecha_nacimiento' => $this->fecha_nacimiento,
-                'cliente_id'       => $this->cliente_id,
+                'cliente_id' => $this->cliente_id,
             ]
         );
 
@@ -76,7 +87,7 @@ class MascotasIndex extends Component
     public function render()
     {
         $mascotas = Mascota::with('cliente')
-            ->where('nombre', 'like', '%' . $this->search . '%')
+            ->where('nombre', 'like', '%'.$this->search.'%')
             ->paginate(10);
 
         $clientes = User::orderBy('name')->get();

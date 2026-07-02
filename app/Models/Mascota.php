@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Mascota extends Model
 {
     protected $fillable = [
-        'cliente_id', 'nombre', 'especie', 'raza', 'fecha_nacimiento'
+        'cliente_id', 'nombre', 'especie', 'raza', 'fecha_nacimiento',
     ];
 
     public function cliente()

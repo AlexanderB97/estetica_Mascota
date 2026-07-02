@@ -10,15 +10,24 @@ class ServiciosIndex extends Component
 {
     use WithPagination;
 
-    public $nombre, $descripcion, $precio, $duracion_minutos;
+    public $nombre;
+
+    public $descripcion;
+
+    public $precio;
+
+    public $duracion_minutos;
+
     public $servicioId;
+
     public $modal = false;
+
     public $search = '';
 
     protected $rules = [
-        'nombre'           => 'required|string|max:255',
-        'descripcion'      => 'nullable|string',
-        'precio'           => 'required|numeric|min:0',
+        'nombre' => 'required|string|max:255',
+        'descripcion' => 'nullable|string',
+        'precio' => 'required|numeric|min:0',
         'duracion_minutos' => 'required|integer|min:1',
     ];
 
@@ -36,12 +45,12 @@ class ServiciosIndex extends Component
     public function editar($id)
     {
         $servicio = Servicio::findOrFail($id);
-        $this->servicioId        = $servicio->id;
-        $this->nombre            = $servicio->nombre;
-        $this->descripcion       = $servicio->descripcion;
-        $this->precio            = $servicio->precio;
-        $this->duracion_minutos  = $servicio->duracion_minutos;
-        $this->modal             = true;
+        $this->servicioId = $servicio->id;
+        $this->nombre = $servicio->nombre;
+        $this->descripcion = $servicio->descripcion;
+        $this->precio = $servicio->precio;
+        $this->duracion_minutos = $servicio->duracion_minutos;
+        $this->modal = true;
     }
 
     public function guardar()
@@ -51,9 +60,9 @@ class ServiciosIndex extends Component
         Servicio::updateOrCreate(
             ['id' => $this->servicioId],
             [
-                'nombre'           => $this->nombre,
-                'descripcion'      => $this->descripcion,
-                'precio'           => $this->precio,
+                'nombre' => $this->nombre,
+                'descripcion' => $this->descripcion,
+                'precio' => $this->precio,
                 'duracion_minutos' => $this->duracion_minutos,
             ]
         );
@@ -71,7 +80,7 @@ class ServiciosIndex extends Component
 
     public function render()
     {
-        $servicios = Servicio::where('nombre', 'like', '%' . $this->search . '%')
+        $servicios = Servicio::where('nombre', 'like', '%'.$this->search.'%')
             ->paginate(10);
 
         return view('livewire.servicios.servicios-index', compact('servicios'))

@@ -2,9 +2,9 @@
 
 namespace App\Livewire\Ventas;
 
-use App\Models\Venta;
 use App\Models\Producto;
-use App\Models\VentaItem;
+use App\Models\Venta;
+use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -12,24 +12,37 @@ class VentasIndex extends Component
 {
     use WithPagination;
 
-    public $usuario_id, $estado = 'pendiente';
+    public $usuario_id;
+
+    public $estado = 'pendiente';
+
     public $ventaId;
+
     public $modal = false;
+
     public $modalDetalle = false;
+
     public $ventaDetalle = null;
+
     public $search = '';
 
     public $items = [];
-    public $producto_id, $cantidad = 1;
+
+    public $producto_id;
+
+    public $cantidad = 1;
 
     protected $rules = [
-        'estado'     => 'required|in:pendiente,completada,cancelada',
-        'items'      => 'required|array|min:1',
+        'estado' => 'required|in:pendiente,completada,cancelada',
+        'items' => 'required|array|min:1',
         'items.*.producto_id' => 'required|exists:productos,id',
-        'items.*.cantidad'    => 'required|integer|min:1',
+        'items.*.cantidad' => 'required|integer|min:1',
     ];
 
-    public function updatingSearch() { $this->resetPage(); }
+    public function updatingSearch()
+    {
+        $this->resetPage();
+    }
 
     public function abrirModal()
     {
@@ -41,9 +54,13 @@ class VentasIndex extends Component
 
     public function agregarItem()
     {
-        if (!$this->producto_id) return;
+        if (! $this->producto_id) {
+            return;
+        }
         $producto = Producto::find($this->producto_id);
-        if (!$producto) return;
+        if (! $producto) {
+            return;
+        }
 
         $existe = false;
         foreach ($this->items as &$item) {
@@ -54,12 +71,12 @@ class VentasIndex extends Component
             }
         }
 
-        if (!$existe) {
+        if (! $existe) {
             $this->items[] = [
                 'producto_id' => $producto->id,
-                'nombre'      => $producto->nombre,
-                'precio'      => $producto->precio,
-                'cantidad'    => $this->cantidad,
+                'nombre' => $producto->nombre,
+                'precio' => $producto->precio,
+                'cantidad' => $this->cantidad,
             ];
         }
 
@@ -74,30 +91,32 @@ class VentasIndex extends Component
 
     public function getTotalProperty()
     {
-        return collect($this->items)->sum(fn($i) => $i['precio'] * $i['cantidad']);
+        return collect($this->items)->sum(fn ($i) => $i['precio'] * $i['cantidad']);
     }
 
     public function guardar()
     {
         $this->validate();
 
-        $venta = Venta::updateOrCreate(
-            ['id' => $this->ventaId],
-            [
-                'usuario_id' => auth()->id(),
-                'estado'     => $this->estado,
-                'total'      => $this->total,
-            ]
-        );
+        DB::transaction(function () {
+            $venta = Venta::updateOrCreate(
+                ['id' => $this->ventaId],
+                [
+                    'usuario_id' => auth()->id(),
+                    'estado' => $this->estado,
+                    'total' => $this->total,
+                ]
+            );
 
-        $venta->items()->delete();
-        foreach ($this->items as $item) {
-            $venta->items()->create([
-                'producto_id'    => $item['producto_id'],
-                'cantidad'       => $item['cantidad'],
-                'precio_unitario'=> $item['precio'],
-            ]);
-        }
+            $venta->items()->delete();
+            foreach ($this->items as $item) {
+                $venta->items()->create([
+                    'producto_id' => $item['producto_id'],
+                    'cantidad' => $item['cantidad'],
+                    'precio_unitario' => $item['precio'],
+                ]);
+            }
+        });
 
         $this->modal = false;
         session()->flash('mensaje', 'Venta guardada correctamente.');
