@@ -9,16 +9,16 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-   public function up(): void
-{
-    Schema::create('ventas', function (Blueprint $table) {
-        $table->id();
-        $table->foreignId('usuario_id')->constrained('users')->onDelete('cascade');
-        $table->decimal('total', 10, 2)->default(0);
-        $table->enum('estado', ['pendiente', 'completada', 'cancelada'])->default('pendiente');
-        $table->timestamps();
-    });
-}
+    public function up(): void
+    {
+        Schema::create('ventas', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('usuario_id')->constrained('users')->onDelete('cascade');
+            $table->decimal('total', 10, 2)->default(0);
+            $table->enum('estado', ['pendiente', 'completada', 'cancelada'])->default('pendiente');
+            $table->timestamps();
+        });
+    }
 
     /**
      * Reverse the migrations.

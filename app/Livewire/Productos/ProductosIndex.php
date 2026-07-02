@@ -10,17 +10,28 @@ class ProductosIndex extends Component
 {
     use WithPagination;
 
-    public $nombre, $descripcion, $precio, $stock, $categoria;
+    public $nombre;
+
+    public $descripcion;
+
+    public $precio;
+
+    public $stock;
+
+    public $categoria;
+
     public $productoId;
+
     public $modal = false;
+
     public $search = '';
 
     protected $rules = [
-        'nombre'      => 'required|string|max:255',
+        'nombre' => 'required|string|max:255',
         'descripcion' => 'nullable|string',
-        'precio'      => 'required|numeric|min:0',
-        'stock'       => 'required|integer|min:0',
-        'categoria'   => 'required|string|max:255',
+        'precio' => 'required|numeric|min:0',
+        'stock' => 'required|integer|min:0',
+        'categoria' => 'required|string|max:255',
     ];
 
     public function updatingSearch()
@@ -37,13 +48,13 @@ class ProductosIndex extends Component
     public function editar($id)
     {
         $producto = Producto::findOrFail($id);
-        $this->productoId  = $producto->id;
-        $this->nombre      = $producto->nombre;
+        $this->productoId = $producto->id;
+        $this->nombre = $producto->nombre;
         $this->descripcion = $producto->descripcion;
-        $this->precio      = $producto->precio;
-        $this->stock       = $producto->stock;
-        $this->categoria   = $producto->categoria;
-        $this->modal       = true;
+        $this->precio = $producto->precio;
+        $this->stock = $producto->stock;
+        $this->categoria = $producto->categoria;
+        $this->modal = true;
     }
 
     public function guardar()
@@ -53,11 +64,11 @@ class ProductosIndex extends Component
         Producto::updateOrCreate(
             ['id' => $this->productoId],
             [
-                'nombre'      => $this->nombre,
+                'nombre' => $this->nombre,
                 'descripcion' => $this->descripcion,
-                'precio'      => $this->precio,
-                'stock'       => $this->stock,
-                'categoria'   => $this->categoria,
+                'precio' => $this->precio,
+                'stock' => $this->stock,
+                'categoria' => $this->categoria,
             ]
         );
 
@@ -74,7 +85,7 @@ class ProductosIndex extends Component
 
     public function render()
     {
-        $productos = Producto::where('nombre', 'like', '%' . $this->search . '%')
+        $productos = Producto::where('nombre', 'like', '%'.$this->search.'%')
             ->paginate(10);
 
         return view('livewire.productos.productos-index', compact('productos'))

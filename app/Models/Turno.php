@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Turno extends Model
 {
     protected $fillable = [
-        'mascota_id', 'servicio_id', 'usuario_id', 'fecha_hora', 'estado', 'notas'
+        'mascota_id', 'servicio_id', 'usuario_id', 'fecha_hora', 'estado', 'notas',
     ];
 
     public function mascota()

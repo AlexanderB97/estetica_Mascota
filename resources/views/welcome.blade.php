@@ -18,9 +18,7 @@
                 <a href="/login" class="text-white hover:text-purple-200 transition text-sm">
                     <i class="fa-solid fa-right-to-bracket mr-1"></i>Iniciar sesión
                 </a>
-                <a href="/register" class="bg-white text-purple-700 px-4 py-1 rounded-full text-sm font-semibold hover:bg-purple-100 transition">
-                    Registrarse
-                </a>
+                
             </div>
         </div>
     </nav>
@@ -33,9 +31,7 @@
             <a href="/login" class="bg-purple-600 hover:bg-purple-700 text-white px-8 py-3 rounded-full text-lg font-semibold shadow transition">
                 <i class="fa-solid fa-right-to-bracket mr-2"></i>Iniciar sesión
             </a>
-            <a href="/register" class="border-2 border-purple-600 text-purple-600 hover:bg-purple-50 px-8 py-3 rounded-full text-lg font-semibold transition">
-                Registrarse
-            </a>
+           
         </div>
     </section>
 
