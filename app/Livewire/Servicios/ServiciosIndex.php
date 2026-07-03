@@ -53,30 +53,38 @@ class ServiciosIndex extends Component
         $this->modal = true;
     }
 
-    public function guardar()
-    {
-        $this->validate();
-
-        Servicio::updateOrCreate(
-            ['id' => $this->servicioId],
-            [
-                'nombre' => $this->nombre,
-                'descripcion' => $this->descripcion,
-                'precio' => $this->precio,
-                'duracion_minutos' => $this->duracion_minutos,
-            ]
-        );
-
-        $this->modal = false;
-        $this->reset(['nombre', 'descripcion', 'precio', 'duracion_minutos', 'servicioId']);
-        session()->flash('mensaje', 'Servicio guardado correctamente.');
+  public function guardar()
+{
+    if ($this->servicioId) {
+        $this->authorize('update', Servicio::findOrFail($this->servicioId));
+    } else {
+        $this->authorize('create', Servicio::class);
     }
 
-    public function eliminar($id)
-    {
-        Servicio::findOrFail($id)->delete();
-        session()->flash('mensaje', 'Servicio eliminado.');
-    }
+    $this->validate();
+
+    Servicio::updateOrCreate(
+        ['id' => $this->servicioId],
+        [
+            'nombre' => $this->nombre,
+            'descripcion' => $this->descripcion,
+            'precio' => $this->precio,
+            'duracion_minutos' => $this->duracion_minutos,
+        ]
+    );
+
+    $this->modal = false;
+    $this->reset(['nombre', 'descripcion', 'precio', 'duracion_minutos', 'servicioId']);
+    session()->flash('mensaje', 'Servicio guardado correctamente.');
+}
+
+public function eliminar($id)
+{
+    $servicio = Servicio::findOrFail($id);
+    $this->authorize('delete', $servicio);
+    $servicio->delete();
+    session()->flash('mensaje', 'Servicio eliminado.');
+}
 
     public function render()
     {
