@@ -22,6 +22,9 @@
                 <a href="/mascotas" class="hover:text-purple-200 transition"><i class="fa-solid fa-dog mr-1"></i>Mascotas</a>
                 <a href="/turnos" class="hover:text-purple-200 transition"><i class="fa-solid fa-calendar mr-1"></i>Turnos</a>
                 <a href="/ventas" class="hover:text-purple-200 transition"><i class="fa-solid fa-cash-register mr-1"></i>Ventas</a>
+                @if (auth()->user()->role === 'admin')
+                    <a href="/usuarios" class="hover:text-purple-200 transition"><i class="fa-solid fa-users-gear mr-1"></i>Usuarios</a>
+                @endif
                 <form method="POST" action="/logout" class="inline">
                     @csrf
                     <button class="hover:text-red-300 transition"><i class="fa-solid fa-right-from-bracket mr-1"></i>Salir</button>
