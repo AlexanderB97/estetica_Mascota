@@ -2,8 +2,8 @@
 
 namespace App\Livewire\Mascotas;
 
+use App\Models\Cliente;
 use App\Models\Mascota;
-use App\Models\User;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -32,7 +32,7 @@ class MascotasIndex extends Component
         'especie' => 'required|string|max:255',
         'raza' => 'nullable|string|max:255',
         'fecha_nacimiento' => 'nullable|date',
-        'cliente_id' => 'required|exists:users,id',
+        'cliente_id' => 'required|exists:clientes,id',
     ];
 
     public function updatingSearch()
@@ -98,7 +98,7 @@ class MascotasIndex extends Component
             ->where('nombre', 'like', '%' . $this->search . '%')
             ->paginate(10);
 
-        $clientes = User::orderBy('name')->get();
+        $clientes = Cliente::orderBy('nombre')->get();
 
         return view('livewire.mascotas.mascotas-index', compact('mascotas', 'clientes'))
             ->layout('components.layouts.app');

@@ -20,10 +20,11 @@
                 <a href="/productos" class="hover:text-purple-200 transition"><i class="fa-solid fa-box mr-1"></i>Productos</a>
                 <a href="/servicios" class="hover:text-purple-200 transition"><i class="fa-solid fa-scissors mr-1"></i>Servicios</a>
                 <a href="/mascotas" class="hover:text-purple-200 transition"><i class="fa-solid fa-dog mr-1"></i>Mascotas</a>
+                <a href="/clientes" class="hover:text-purple-200 transition"><i class="fa-solid fa-address-book mr-1"></i>Clientes</a>
                 <a href="/turnos" class="hover:text-purple-200 transition"><i class="fa-solid fa-calendar mr-1"></i>Turnos</a>
                 <a href="/ventas" class="hover:text-purple-200 transition"><i class="fa-solid fa-cash-register mr-1"></i>Ventas</a>
                 @if (auth()->user()->role === 'admin')
-                    <a href="/usuarios" class="hover:text-purple-200 transition"><i class="fa-solid fa-users-gear mr-1"></i>Usuarios</a>
+                <a href="/usuarios" class="hover:text-purple-200 transition"><i class="fa-solid fa-users-gear mr-1"></i>Usuarios</a>
                 @endif
                 <form method="POST" action="/logout" class="inline">
                     @csrf

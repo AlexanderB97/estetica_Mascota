@@ -12,6 +12,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/turnos', \App\Livewire\Turnos\TurnosIndex::class)->name('turnos.index');
     Route::get('/ventas', \App\Livewire\Ventas\VentasIndex::class)->name('ventas.index');
     Route::get('/usuarios', \App\Livewire\Usuarios\UsuariosIndex::class)->name('usuarios.index');
+    Route::get('/clientes', \App\Livewire\Clientes\ClientesIndex::class)->name('clientes.index');
 });
 
 Route::view('profile', 'profile')

@@ -111,9 +111,10 @@ class TurnosIndex extends Component
             })
             ->paginate(10);
 
-        $mascotas  = Mascota::orderBy('nombre')->get();
+        $mascotas = Mascota::with('cliente')->orderBy('nombre')->get();
         $servicios = Servicio::orderBy('nombre')->get();
         $usuarios  = User::orderBy('name')->get();
+        
 
         return view('livewire.turnos.turnos-index', compact('turnos', 'mascotas', 'servicios', 'usuarios'))
             ->layout('components.layouts.app');
