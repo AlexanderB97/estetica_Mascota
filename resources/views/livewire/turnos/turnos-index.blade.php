@@ -99,7 +99,7 @@
                         class="border border-gray-200 rounded-lg w-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-400">
                         <option value="">Seleccioná una mascota</option>
                         @foreach ($mascotas as $mascota)
-                            <option value="{{ $mascota->id }}">{{ $mascota->nombre }} ({{ $mascota->especie }})</option>
+                            <option value="{{ $mascota->id }}">{{ $mascota->nombre }} ({{ $mascota->especie }}) — {{ $mascota->cliente->nombre }}</option>
                         @endforeach
                     </select>
                     @error('mascota_id') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror

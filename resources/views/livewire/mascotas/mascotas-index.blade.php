@@ -45,7 +45,7 @@
                         </td>
                         <td class="p-4 text-gray-500">{{ $mascota->raza ?? '-' }}</td>
                         <td class="p-4 text-gray-700">
-                            <i class="fa-solid fa-user text-gray-400 mr-1"></i>{{ $mascota->cliente->name }}
+                                 <i class="fa-solid fa-user text-gray-400 mr-1"></i>{{ $mascota->cliente->nombre }}
                         </td>
                         <td class="p-4 flex gap-2">
                             <button wire:click="editar({{ $mascota->id }})"
@@ -89,7 +89,7 @@
                         class="border border-gray-200 rounded-lg w-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-400">
                         <option value="">Seleccioná un cliente</option>
                         @foreach ($clientes as $cliente)
-                            <option value="{{ $cliente->id }}">{{ $cliente->name }}</option>
+                             <option value="{{ $cliente->id }}">{{ $cliente->nombre }}</option>
                         @endforeach
                     </select>
                     @error('cliente_id') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
