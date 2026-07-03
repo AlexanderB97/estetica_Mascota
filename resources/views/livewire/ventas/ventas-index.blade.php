@@ -51,11 +51,13 @@
                                 class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded-full text-xs transition">
                                 <i class="fa-solid fa-eye"></i> Ver
                             </button>
-                            <button wire:click="eliminar({{ $venta->id }})"
-                                wire:confirm="Seguro que queres eliminar esta venta?"
-                                class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-full text-xs transition">
-                                <i class="fa-solid fa-trash"></i> Eliminar
-                            </button>
+                            @if (auth()->user()->role === 'admin')
+                                <button wire:click="eliminar({{ $venta->id }})"
+                                    wire:confirm="Seguro que queres eliminar esta venta?"
+                                    class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-full text-xs transition">
+                                    <i class="fa-solid fa-trash"></i> Eliminar
+                                </button>
+                            @endif
                         </td>
                     </tr>
                 @empty
