@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="csrf-token" content="{{ csrf_token() }}">
+
+        <title>{{ config('app.name', 'Estética Mascotas') }}</title>
+
+        @vite(['resources/css/app.css', 'resources/js/app.js'])
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+    </head>
+    <body class="font-sans text-gray-900 antialiased">
+        <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-gradient-to-br from-purple-800 via-purple-600 to-purple-400">
+            <div class="flex flex-col items-center text-white mb-2">
+                <div class="bg-white bg-opacity-20 rounded-full p-4">
+                    <i class="fa-solid fa-paw text-3xl"></i>
+                </div>
+                <p class="font-bold text-xl mt-3">Estética Mascotas</p>
+            </div>
+
+            <div class="w-full sm:max-w-md mt-6 px-6 py-6 bg-white shadow-2xl overflow-hidden sm:rounded-2xl">
+                {{ $slot }}
+            </div>
+        </div>
+    </body>
+</html>
