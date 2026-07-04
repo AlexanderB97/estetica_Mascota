@@ -1,9 +1,6 @@
 <?php
 
-use App\Providers\AppServiceProvider;
-use App\Providers\VoltServiceProvider;
-
 return [
-    AppServiceProvider::class,
-    VoltServiceProvider::class,
+    App\Providers\AppServiceProvider::class,
+    App\Providers\VoltServiceProvider::class,
 ];

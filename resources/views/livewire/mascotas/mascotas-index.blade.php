@@ -45,18 +45,20 @@
                         </td>
                         <td class="p-4 text-gray-500">{{ $mascota->raza ?? '-' }}</td>
                         <td class="p-4 text-gray-700">
-                                 <i class="fa-solid fa-user text-gray-400 mr-1"></i>{{ $mascota->cliente->nombre }}
+                            <i class="fa-solid fa-user text-gray-400 mr-1"></i>{{ $mascota->cliente->nombre }} {{ $mascota->cliente->apellido }}
                         </td>
                         <td class="p-4 flex gap-2">
                             <button wire:click="editar({{ $mascota->id }})"
                                 class="bg-amber-400 hover:bg-amber-500 text-white px-3 py-1 rounded-full text-xs transition">
                                 <i class="fa-solid fa-pen"></i> Editar
                             </button>
-                            <button wire:click="eliminar({{ $mascota->id }})"
-                                wire:confirm="Seguro que queres eliminar esta mascota?"
-                                class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-full text-xs transition">
-                                <i class="fa-solid fa-trash"></i> Eliminar
-                            </button>
+                              @if (auth()->user()->role === 'admin')
+    <button wire:click="eliminar({{ $mascota->id }})"
+        wire:confirm="Seguro que queres eliminar esta mascota?"
+        class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-full text-xs transition">
+        <i class="fa-solid fa-trash"></i> Eliminar
+    </button>
+@endif
                         </td>
                     </tr>
                 @empty
@@ -89,7 +91,7 @@
                         class="border border-gray-200 rounded-lg w-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-400">
                         <option value="">Seleccioná un cliente</option>
                         @foreach ($clientes as $cliente)
-                             <option value="{{ $cliente->id }}">{{ $cliente->nombre }}</option>
+                            <option value="{{ $cliente->id }}">{{ $cliente->nombre }} {{ $cliente->apellido }}</option>
                         @endforeach
                     </select>
                     @error('cliente_id') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
@@ -105,14 +107,26 @@
                 <div class="grid grid-cols-2 gap-3 mb-3">
                     <div>
                         <label class="block text-sm text-gray-600 mb-1">Especie</label>
-                        <input wire:model="especie" type="text"
-                            class="border border-gray-200 rounded-lg w-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-400" />
+                        <select wire:model.live="especie" id="especie-select"
+                            class="border border-gray-200 rounded-lg w-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-400">
+                            <option value="">Seleccioná una especie</option>
+                            <option value="Perro">Perro</option>
+                            <option value="Gato">Gato</option>
+                            <option value="Ave">Ave</option>
+                            <option value="Conejo">Conejo</option>
+                            <option value="Hamster">Hamster</option>
+                            <option value="Otro">Otro</option>
+                        </select>
                         @error('especie') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
                     </div>
                     <div>
                         <label class="block text-sm text-gray-600 mb-1">Raza</label>
-                        <input wire:model="raza" type="text"
-                            class="border border-gray-200 rounded-lg w-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-400" />
+                        <input type="text" id="raza-input"
+                            class="border border-gray-200 rounded-lg w-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-400"
+                            placeholder="Buscar raza..."
+                            value="{{ $raza }}" />
+                        <div id="razas-sugeridas"
+                            class="hidden border border-gray-200 rounded-lg mt-1 bg-white shadow-lg max-h-40 overflow-y-auto z-50 absolute"></div>
                     </div>
                 </div>
 
@@ -134,5 +148,68 @@
                 </div>
             </div>
         </div>
+
+        <script>
+            setTimeout(() => {
+                const razaInput = document.getElementById('raza-input');
+                const sugeridas = document.getElementById('razas-sugeridas');
+
+                if (!razaInput) return;
+
+                razaInput.addEventListener('input', async function() {
+                    const especieSelect = document.getElementById('especie-select');
+                    const especie = especieSelect ? especieSelect.value : '';
+                    const query = this.value;
+
+                    if (query.length < 2) {
+                        sugeridas.classList.add('hidden');
+                        return;
+                    }
+
+                    let url = '';
+                    if (especie === 'Perro') {
+                        url = `https://api.thedogapi.com/v1/breeds/search?q=${query}`;
+                    } else if (especie === 'Gato') {
+                        url = `https://api.thecatapi.com/v1/breeds/search?q=${query}`;
+                    } else {
+                        sugeridas.classList.add('hidden');
+                        return;
+                    }
+
+                    try {
+                        const res = await fetch(url);
+                        const data = await res.json();
+                        sugeridas.innerHTML = '';
+
+                        if (data.length === 0) {
+                            sugeridas.classList.add('hidden');
+                            return;
+                        }
+
+                        data.slice(0, 8).forEach(breed => {
+                            const item = document.createElement('div');
+                            item.className = 'px-4 py-2 hover:bg-purple-50 cursor-pointer text-sm text-gray-700';
+                            item.textContent = breed.name;
+                            item.addEventListener('click', () => {
+                                razaInput.value = breed.name;
+                                @this.set('raza', breed.name);
+                                sugeridas.classList.add('hidden');
+                            });
+                            sugeridas.appendChild(item);
+                        });
+
+                        sugeridas.classList.remove('hidden');
+                    } catch (e) {
+                        sugeridas.classList.add('hidden');
+                    }
+                });
+
+                document.addEventListener('click', (e) => {
+                    if (razaInput && !razaInput.contains(e.target)) {
+                        sugeridas.classList.add('hidden');
+                    }
+                });
+            }, 500);
+        </script>
     @endif
 </div>

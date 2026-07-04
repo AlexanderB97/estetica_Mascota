@@ -11,11 +11,11 @@ class User extends Authenticatable
     use HasFactory, Notifiable;
 
     protected $fillable = [
-    'name',
-    'email',
-    'password',
-    'role',
-];
+        'name',
+        'email',
+        'password',
+        'role'
+    ];
 
     protected $hidden = [
         'password',
@@ -28,6 +28,11 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function isAdmin(): bool
+    {
+        return $this->role === 'admin';
     }
 
     public function mascotas()
@@ -43,5 +48,20 @@ class User extends Authenticatable
     public function turnos()
     {
         return $this->hasMany(Turno::class, 'usuario_id');
+    }
+
+    public function empleado()
+    {
+        return $this->hasOne(Empleado::class);
+    }
+
+    public function movimientos()
+    {
+        return $this->hasMany(MovimientoStock::class, 'usuario_id');
+    }
+
+    public function cierresCaja()
+    {
+        return $this->hasMany(CierreCaja::class, 'usuario_id');
     }
 }
