@@ -39,3 +39,11 @@ Route::view('profile', 'profile')
     ->name('profile');
 
 require __DIR__ . '/auth.php';
+
+Route::get('/reset-opcache-temp-9x7', function () {
+    if (function_exists('opcache_reset')) {
+        opcache_reset();
+        return 'OPcache reseteado correctamente';
+    }
+    return 'opcache_reset no está disponible en este servidor';
+});
