@@ -11,6 +11,12 @@ class AppServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
+
+     if (! $this->app->environment('local')) {
+        \URL::forceRootUrl(config('app.url'));
+        \URL::forceScheme('https');
+    }
+
         Gate::define('admin', function ($user) {
             return $user->role === 'admin';
         });
