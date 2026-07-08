@@ -15,11 +15,21 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
-
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+        // 1. Creamos un Administrador fijo para que tú y tu equipo puedan loguearse
+        User::factory()->admin()->create([
+            'name' => 'Administrador Tienda',
+            'email' => 'admin@tienda.com',
+            'password' => bcrypt('admin123'), // Contraseña fácil para desarrollo
         ]);
+
+        // 2. Creamos un Vendedor fijo para probar el otro rol de la app
+        User::factory()->vendedor()->create([
+            'name' => 'Vendedor Test',
+            'email' => 'vendedor@tienda.com',
+            'password' => bcrypt('vendedor123'),
+        ]);
+
+        // 3. Generamos 10 usuarios vendedores aleatorios para tener volumen de datos
+        User::factory()->count(10)->vendedor()->create();
     }
 }
