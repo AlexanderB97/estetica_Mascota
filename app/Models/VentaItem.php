@@ -11,6 +11,7 @@ class VentaItem extends Model
     protected $fillable = [
         'venta_id',
         'producto_id',
+        'servicio_id',
         'cantidad',
         'precio_unitario',
         'subtotal'
@@ -25,4 +26,9 @@ class VentaItem extends Model
     {
         return $this->belongsTo(Producto::class);
     }
+
+    public function servicio()
+{
+    return $this->belongsTo(Servicio::class);
+}
 }
