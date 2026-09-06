@@ -1,90 +1,102 @@
-<x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            Dashboard
-        </h2>
-    </x-slot>
-
-    <div class="p-6">
-        <div class="mb-6">
-            <h1 class="text-3xl font-bold text-purple-700"><i class="fa-solid fa-gauge mr-2"></i>Panel Principal</h1>
-            <p class="text-gray-500 text-sm mt-1">Resumen general del sistema</p>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            <div class="bg-white rounded-2xl shadow p-6 flex items-center gap-4">
-                <div class="bg-purple-100 text-purple-600 rounded-full p-4 text-2xl">
-                    <i class="fa-solid fa-box"></i>
-                </div>
-                <div>
-                    <p class="text-gray-500 text-sm">Productos</p>
-                    <p class="text-3xl font-bold text-gray-800">{{ \App\Models\Producto::count() }}</p>
-                </div>
+<div class="p-8">
+    <!-- Bienvenida -->
+    <div class="bg-gradient-to-r from-purple-600 to-purple-400 rounded-3xl p-8 mb-8 text-white shadow-xl">
+        <div class="flex items-center gap-4 mb-2">
+            <div class="bg-white bg-opacity-20 rounded-full p-3">
+                <i class="fa-solid fa-paw text-3xl"></i>
             </div>
-
-            <div class="bg-white rounded-2xl shadow p-6 flex items-center gap-4">
-                <div class="bg-blue-100 text-blue-600 rounded-full p-4 text-2xl">
-                    <i class="fa-solid fa-dog"></i>
-                </div>
-                <div>
-                    <p class="text-gray-500 text-sm">Mascotas</p>
-                    <p class="text-3xl font-bold text-gray-800">{{ \App\Models\Mascota::count() }}</p>
-                </div>
-            </div>
-
-            <div class="bg-white rounded-2xl shadow p-6 flex items-center gap-4">
-                <div class="bg-green-100 text-green-600 rounded-full p-4 text-2xl">
-                    <i class="fa-solid fa-calendar"></i>
-                </div>
-                <div>
-                    <p class="text-gray-500 text-sm">Turnos hoy</p>
-                    <p class="text-3xl font-bold text-gray-800">{{ \App\Models\Turno::whereDate('fecha_hora', today())->count() }}</p>
-                </div>
-            </div>
-
-            <div class="bg-white rounded-2xl shadow p-6 flex items-center gap-4">
-                <div class="bg-amber-100 text-amber-600 rounded-full p-4 text-2xl">
-                    <i class="fa-solid fa-cash-register"></i>
-                </div>
-                <div>
-                    <p class="text-gray-500 text-sm">Ventas totales</p>
-                    <p class="text-3xl font-bold text-gray-800">${{ number_format(\App\Models\Venta::where('estado', 'completada')->sum('total'), 0) }}</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <div class="bg-white rounded-2xl shadow p-6">
-                <h2 class="text-lg font-bold text-gray-700 mb-4"><i class="fa-solid fa-calendar-check mr-2 text-purple-500"></i>Próximos turnos</h2>
-                @php $turnos = \App\Models\Turno::with(['mascota', 'servicio'])->where('fecha_hora', '>=', now())->orderBy('fecha_hora')->take(5)->get(); @endphp
-                @forelse($turnos as $turno)
-                    <div class="flex justify-between items-center border-b py-3">
-                        <div>
-                            <p class="font-medium text-gray-800"><i class="fa-solid fa-paw text-purple-400 mr-1"></i>{{ $turno->mascota->nombre }}</p>
-                            <p class="text-sm text-gray-500">{{ $turno->servicio->nombre }}</p>
-                        </div>
-                        <span class="text-sm text-gray-500">{{ \Carbon\Carbon::parse($turno->fecha_hora)->format('d/m H:i') }}</span>
-                    </div>
-                @empty
-                    <p class="text-gray-400 text-sm">No hay turnos próximos.</p>
-                @endforelse
-            </div>
-
-            <div class="bg-white rounded-2xl shadow p-6">
-                <h2 class="text-lg font-bold text-gray-700 mb-4"><i class="fa-solid fa-receipt mr-2 text-green-500"></i>Últimas ventas</h2>
-                @php $ventas = \App\Models\Venta::with('usuario')->latest()->take(5)->get(); @endphp
-                @forelse($ventas as $venta)
-                    <div class="flex justify-between items-center border-b py-3">
-                        <div>
-                            <p class="font-medium text-gray-800">#{{ $venta->id }} - {{ $venta->usuario->name }}</p>
-                            <p class="text-sm text-gray-500">{{ $venta->created_at->format('d/m/Y H:i') }}</p>
-                        </div>
-                        <span class="text-green-600 font-bold">${{ number_format($venta->total, 2) }}</span>
-                    </div>
-                @empty
-                    <p class="text-gray-400 text-sm">No hay ventas registradas.</p>
-                @endforelse
+            <div>
+                <h1 class="text-3xl font-bold">¡Bienvenido, {{ auth()->user()->name }}!</h1>
+                <p class="text-purple-100 mt-1">Panel de control — Estética Mascotas</p>
             </div>
         </div>
     </div>
-</x-app-layout>
+
+    <!-- Accesos rápidos -->
+    <h2 class="text-lg font-bold text-gray-600 mb-4 uppercase tracking-wide">Accesos rápidos</h2>
+
+    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+
+        <a href="{{ route('clientes.index') }}" class="bg-white rounded-2xl shadow p-6 flex flex-col items-center gap-3 hover:shadow-lg hover:bg-purple-50 transition group">
+            <div class="bg-indigo-100 text-indigo-600 rounded-full p-4 text-2xl group-hover:bg-indigo-200 transition">
+                <i class="fa-solid fa-users"></i>
+            </div>
+            <span class="font-semibold text-gray-700">Clientes</span>
+        </a>
+
+        <a href="{{ route('mascotas.index') }}" class="bg-white rounded-2xl shadow p-6 flex flex-col items-center gap-3 hover:shadow-lg hover:bg-purple-50 transition group">
+            <div class="bg-blue-100 text-blue-600 rounded-full p-4 text-2xl group-hover:bg-blue-200 transition">
+                <i class="fa-solid fa-dog"></i>
+            </div>
+            <span class="font-semibold text-gray-700">Mascotas</span>
+        </a>
+
+        <a href="{{ route('turnos.index') }}" class="bg-white rounded-2xl shadow p-6 flex flex-col items-center gap-3 hover:shadow-lg hover:bg-purple-50 transition group">
+            <div class="bg-green-100 text-green-600 rounded-full p-4 text-2xl group-hover:bg-green-200 transition">
+                <i class="fa-solid fa-calendar"></i>
+            </div>
+            <span class="font-semibold text-gray-700">Turnos</span>
+        </a>
+
+        <a href="{{ route('ventas.index') }}" class="bg-white rounded-2xl shadow p-6 flex flex-col items-center gap-3 hover:shadow-lg hover:bg-purple-50 transition group">
+            <div class="bg-amber-100 text-amber-600 rounded-full p-4 text-2xl group-hover:bg-amber-200 transition">
+                <i class="fa-solid fa-cash-register"></i>
+            </div>
+            <span class="font-semibold text-gray-700">Ventas</span>
+        </a>
+
+        <a href="{{ route('productos.index') }}" class="bg-white rounded-2xl shadow p-6 flex flex-col items-center gap-3 hover:shadow-lg hover:bg-purple-50 transition group">
+            <div class="bg-purple-100 text-purple-600 rounded-full p-4 text-2xl group-hover:bg-purple-200 transition">
+                <i class="fa-solid fa-box"></i>
+            </div>
+            <span class="font-semibold text-gray-700">Productos</span>
+        </a>
+
+        <a href="{{ route('servicios.index') }}" class="bg-white rounded-2xl shadow p-6 flex flex-col items-center gap-3 hover:shadow-lg hover:bg-purple-50 transition group">
+            <div class="bg-rose-100 text-rose-600 rounded-full p-4 text-2xl group-hover:bg-rose-200 transition">
+                <i class="fa-solid fa-scissors"></i>
+            </div>
+            <span class="font-semibold text-gray-700">Servicios</span>
+        </a>
+
+        <a href="{{ route('categorias.index') }}" class="bg-white rounded-2xl shadow p-6 flex flex-col items-center gap-3 hover:shadow-lg hover:bg-purple-50 transition group">
+            <div class="bg-pink-100 text-pink-600 rounded-full p-4 text-2xl group-hover:bg-pink-200 transition">
+                <i class="fa-solid fa-tags"></i>
+            </div>
+            <span class="font-semibold text-gray-700">Categorías</span>
+        </a>
+
+        @can('admin')
+
+        <a href="{{ route('proveedores.index') }}" class="bg-white rounded-2xl shadow p-6 flex flex-col items-center gap-3 hover:shadow-lg hover:bg-purple-50 transition group">
+            <div class="bg-teal-100 text-teal-600 rounded-full p-4 text-2xl group-hover:bg-teal-200 transition">
+                <i class="fa-solid fa-truck"></i>
+            </div>
+            <span class="font-semibold text-gray-700">Proveedores</span>
+        </a>
+
+        <a href="{{ route('compras.index') }}" class="bg-white rounded-2xl shadow p-6 flex flex-col items-center gap-3 hover:shadow-lg hover:bg-purple-50 transition group">
+            <div class="bg-cyan-100 text-cyan-600 rounded-full p-4 text-2xl group-hover:bg-cyan-200 transition">
+                <i class="fa-solid fa-cart-shopping"></i>
+            </div>
+            <span class="font-semibold text-gray-700">Compras</span>
+        </a>
+
+        <a href="{{ route('stock.index') }}" class="bg-white rounded-2xl shadow p-6 flex flex-col items-center gap-3 hover:shadow-lg hover:bg-purple-50 transition group">
+            <div class="bg-orange-100 text-orange-600 rounded-full p-4 text-2xl group-hover:bg-orange-200 transition">
+                <i class="fa-solid fa-warehouse"></i>
+            </div>
+            <span class="font-semibold text-gray-700">Stock</span>
+        </a>
+
+        <a href="{{ route('empleados.index') }}" class="bg-white rounded-2xl shadow p-6 flex flex-col items-center gap-3 hover:shadow-lg hover:bg-purple-50 transition group">
+            <div class="bg-violet-100 text-violet-600 rounded-full p-4 text-2xl group-hover:bg-violet-200 transition">
+                <i class="fa-solid fa-id-badge"></i>
+            </div>
+            <span class="font-semibold text-gray-700">Empleados</span>
+        </a>
+
+        @endcan
+
+    </div>
+</div>

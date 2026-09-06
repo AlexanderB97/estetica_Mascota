@@ -4,7 +4,6 @@ namespace App\Policies;
 
 use App\Models\Servicio;
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
 
 class ServicioPolicy
 {
@@ -13,7 +12,7 @@ class ServicioPolicy
         return true;
     }
 
-    public function view(User $user, Servicio $servicio): bool
+    public function view(User $user, Servicio $model): bool
     {
         return true;
     }
@@ -23,22 +22,22 @@ class ServicioPolicy
         return in_array($user->role, ['admin', 'vendedor']);
     }
 
-    public function update(User $user, Servicio $servicio): bool
+    public function update(User $user, Servicio $model): bool
     {
         return in_array($user->role, ['admin', 'vendedor']);
     }
 
-    public function delete(User $user, Servicio $servicio): bool
+    public function delete(User $user, Servicio $model): bool
     {
         return $user->role === 'admin';
     }
 
-    public function restore(User $user, Servicio $servicio): bool
+    public function restore(User $user, Servicio $model): bool
     {
         return false;
     }
 
-    public function forceDelete(User $user, Servicio $servicio): bool
+    public function forceDelete(User $user, Servicio $model): bool
     {
         return false;
     }

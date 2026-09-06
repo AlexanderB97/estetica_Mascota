@@ -11,15 +11,14 @@
 
     <nav class="bg-gradient-to-r from-purple-700 to-purple-500 shadow-lg">
         <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
-            <a href="/" class="flex items-center gap-2 text-white text-xl font-bold">
+           <a href="{{ url('/') }}" class="flex items-center gap-2 text-white text-xl font-bold">
                 <i class="fa-solid fa-paw"></i> Estética Mascotas
             </a>
             <div class="flex gap-4">
-                <a href="/login" class="text-white hover:text-purple-200 transition text-sm">
-                    <i class="fa-solid fa-right-to-bracket mr-1"></i>Iniciar sesión
-                </a>
-                
-            </div>
+    <a href="{{ route('login') }}" class="bg-white text-purple-700 px-4 py-1 rounded-full text-sm font-semibold hover:bg-purple-100 transition">
+        <i class="fa-solid fa-right-to-bracket mr-1"></i>Iniciar sesión
+    </a>
+</div>
         </div>
     </nav>
 
@@ -28,11 +27,10 @@
         <h1 class="text-5xl font-bold text-purple-700 mb-4">Estética Mascotas</h1>
         <p class="text-gray-500 text-xl mb-8 max-w-xl">Sistema profesional de gestión de ventas, turnos e inventario para tu estética de mascotas.</p>
         <div class="flex gap-4">
-            <a href="/login" class="bg-purple-600 hover:bg-purple-700 text-white px-8 py-3 rounded-full text-lg font-semibold shadow transition">
-                <i class="fa-solid fa-right-to-bracket mr-2"></i>Iniciar sesión
-            </a>
-           
-        </div>
+     <a href="{{ route('login') }}" class="bg-purple-600 hover:bg-purple-700 text-white px-8 py-3 rounded-full text-lg font-semibold shadow transition">
+        <i class="fa-solid fa-right-to-bracket mr-2"></i>Iniciar sesión
+    </a>
+</div>
     </section>
 
     <section class="max-w-7xl mx-auto px-4 pb-20">

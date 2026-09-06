@@ -15,15 +15,24 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+               // 1. Administrador fijo (mínimo 8 caracteres)
+        User::factory()->admin()->create([
+            'name' => 'Administrador Tienda',
+            'email' => 'admin@tienda.com',
+            'password' => bcrypt('admin1234'), // Cambiado a admin1234 (9 caracteres)
         ]);
 
-        User::factory()->create([
-            'name' => 'Admin',
-            'email' => 'admin@example.com',
-            'password' => bcrypt('password'),
+        // 2. Vendedor fijo (mínimo 8 caracteres)
+        User::factory()->vendedor()->create([
+            'name' => 'Vendedor Test',
+            'email' => 'vendedor@tienda.com',
+            'password' => bcrypt('vendedor123'), // Tiene 11 caracteres (Correcto)
         ]);
+
+        // 3. Generamos 10 usuarios vendedores aleatorios para tener volumen de datos
+        User::factory()->count(10)->vendedor()->create();
+
+        // 4. LLAMAR AL SEEDER DE LAS APIs Y PANEL ADMINISTRATIVO
+        $this->call(TiendaMascotasSeeder::class);
     }
 }

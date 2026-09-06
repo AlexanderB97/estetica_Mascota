@@ -11,28 +11,17 @@ class MascotasIndex extends Component
 {
     use WithPagination;
 
-    public $nombre;
-
-    public $especie;
-
-    public $raza;
-
-    public $fecha_nacimiento;
-
-    public $cliente_id;
-
+    public $nombre, $especie, $raza, $fecha_nacimiento, $cliente_id;
     public $mascotaId;
-
     public $modal = false;
-
     public $search = '';
 
     protected $rules = [
-        'nombre' => 'required|string|max:255',
-        'especie' => 'required|string|max:255',
-        'raza' => 'nullable|string|max:255',
+        'nombre'           => 'required|string|max:255',
+        'especie'          => 'required|string|max:255',
+        'raza'             => 'nullable|string|max:255',
         'fecha_nacimiento' => 'nullable|date',
-        'cliente_id' => 'required|exists:clientes,id',
+        'cliente_id'       => 'required|exists:clientes,id',
     ];
 
     public function updatingSearch()
@@ -49,24 +38,24 @@ class MascotasIndex extends Component
     public function editar($id)
     {
         $mascota = Mascota::findOrFail($id);
-        $this->mascotaId = $mascota->id;
-        $this->nombre = $mascota->nombre;
-        $this->especie = $mascota->especie;
-        $this->raza = $mascota->raza;
+        $this->mascotaId        = $mascota->id;
+        $this->nombre           = $mascota->nombre;
+        $this->especie          = $mascota->especie;
+        $this->raza             = $mascota->raza;
         $this->fecha_nacimiento = $mascota->fecha_nacimiento;
-        $this->cliente_id = $mascota->cliente_id;
-        $this->modal = true;
+        $this->cliente_id       = $mascota->cliente_id;
+        $this->modal            = true;
     }
 
     public function guardar()
     {
-        $this->validate();
-
         if ($this->mascotaId) {
             $this->authorize('update', Mascota::findOrFail($this->mascotaId));
         } else {
             $this->authorize('create', Mascota::class);
         }
+
+        $this->validate();
 
         Mascota::updateOrCreate(
             ['id' => $this->mascotaId],

@@ -48,11 +48,13 @@
                                 class="bg-amber-400 hover:bg-amber-500 text-white px-3 py-1 rounded-full text-xs transition">
                                 <i class="fa-solid fa-pen"></i> Editar
                             </button>
-                            <button wire:click="eliminar({{ $servicio->id }})"
-                                wire:confirm="Seguro que queres eliminar este servicio?"
-                                class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-full text-xs transition">
-                                <i class="fa-solid fa-trash"></i> Eliminar
-                            </button>
+                                @if (auth()->user()->role === 'admin')
+    <button wire:click="eliminar({{ $servicio->id }})"
+        wire:confirm="Seguro que queres eliminar este servicio?"
+        class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-full text-xs transition">
+        <i class="fa-solid fa-trash"></i> Eliminar
+    </button>
+@endif
                         </td>
                     </tr>
                 @empty

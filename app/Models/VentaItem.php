@@ -9,7 +9,11 @@ class VentaItem extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'venta_id', 'producto_id', 'cantidad', 'precio_unitario',
+        'venta_id',
+        'producto_id',
+        'cantidad',
+        'precio_unitario',
+        'subtotal'
     ];
 
     public function venta()

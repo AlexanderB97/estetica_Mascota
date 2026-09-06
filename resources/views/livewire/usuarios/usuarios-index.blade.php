@@ -1,8 +1,8 @@
 <div class="p-6">
     <div class="flex justify-between items-center mb-6">
         <div>
-            <h1 class="text-3xl font-bold text-purple-700"><i class="fa-solid fa-users mr-2"></i>Usuarios</h1>
-            <p class="text-gray-500 text-sm mt-1">Gestioná el personal del sistema (admin y vendedores)</p>
+            <h1 class="text-3xl font-bold text-purple-700"><i class="fa-solid fa-users-gear mr-2"></i>Usuarios</h1>
+            <p class="text-gray-500 text-sm mt-1">Gestioná los usuarios del sistema</p>
         </div>
         <button wire:click="abrirModal"
             class="bg-purple-600 hover:bg-purple-700 text-white px-5 py-2 rounded-full shadow transition flex items-center gap-2">
@@ -18,7 +18,7 @@
 
     @if (session()->has('error'))
         <div class="bg-red-100 text-red-800 p-3 rounded-lg mb-4 flex items-center gap-2">
-            <i class="fa-solid fa-triangle-exclamation"></i> {{ session('error') }}
+            <i class="fa-solid fa-circle-exclamation"></i> {{ session('error') }}
         </div>
     @endif
 
@@ -40,10 +40,18 @@
             <tbody>
                 @forelse ($usuarios as $usuario)
                     <tr class="border-t hover:bg-purple-50 transition">
-                        <td class="p-4 font-medium text-gray-800">{{ $usuario->name }}</td>
+                        <td class="p-4 font-medium text-gray-800">
+                            <i class="fa-solid fa-user text-purple-400 mr-1"></i>{{ $usuario->name }}
+                            @if($usuario->id === auth()->id())
+                                <span class="text-xs bg-purple-100 text-purple-700 px-2 py-0.5 rounded-full ml-1">Tú</span>
+                            @endif
+                        </td>
                         <td class="p-4 text-gray-600">{{ $usuario->email }}</td>
                         <td class="p-4">
-                            <span class="@if($usuario->role === 'admin') bg-purple-100 text-purple-700 @else bg-blue-100 text-blue-700 @endif px-3 py-1 rounded-full text-xs font-medium">
+                            <span class="px-3 py-1 rounded-full text-xs font-medium
+                                @if($usuario->role === 'admin') bg-yellow-100 text-yellow-800
+                                @else bg-blue-100 text-blue-800
+                                @endif">
                                 {{ ucfirst($usuario->role) }}
                             </span>
                         </td>
@@ -52,7 +60,7 @@
                                 class="bg-amber-400 hover:bg-amber-500 text-white px-3 py-1 rounded-full text-xs transition">
                                 <i class="fa-solid fa-pen"></i> Editar
                             </button>
-                            @if ($usuario->id !== auth()->id())
+                            @if($usuario->id !== auth()->id())
                                 <button wire:click="eliminar({{ $usuario->id }})"
                                     wire:confirm="Seguro que queres eliminar este usuario?"
                                     class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-full text-xs transition">
@@ -64,7 +72,7 @@
                 @empty
                     <tr>
                         <td colspan="4" class="p-8 text-center text-gray-400">
-                            <i class="fa-solid fa-users-slash text-4xl mb-2 block"></i>
+                            <i class="fa-solid fa-users text-4xl mb-2 block"></i>
                             No hay usuarios cargados.
                         </td>
                     </tr>
@@ -101,7 +109,7 @@
 
                 <div class="mb-3">
                     <label class="block text-sm text-gray-600 mb-1">
-                        Password @if($usuarioId) <span class="text-gray-400">(dejar vacío para no cambiar)</span> @endif
+                        Contraseña @if($usuarioId) <span class="text-gray-400">(dejar vacío para no cambiar)</span> @endif
                     </label>
                     <input wire:model="password" type="password"
                         class="border border-gray-200 rounded-lg w-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-400" />
@@ -115,7 +123,6 @@
                         <option value="vendedor">Vendedor</option>
                         <option value="admin">Admin</option>
                     </select>
-                    @error('role') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
                 </div>
 
                 <div class="flex justify-end gap-2">

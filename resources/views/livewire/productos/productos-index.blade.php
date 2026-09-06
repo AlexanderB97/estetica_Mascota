@@ -1,6 +1,4 @@
-
 <div class="p-6">
-    
     <div class="flex justify-between items-center mb-6">
         <div>
             <h1 class="text-3xl font-bold text-purple-700"><i class="fa-solid fa-box mr-2"></i>Productos</h1>
@@ -54,11 +52,13 @@
                                 class="bg-amber-400 hover:bg-amber-500 text-white px-3 py-1 rounded-full text-xs transition">
                                 <i class="fa-solid fa-pen"></i> Editar
                             </button>
-                            <button wire:click="eliminar({{ $producto->id }})"
-                                wire:confirm="Seguro que queres eliminar este producto?"
-                                class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-full text-xs transition">
-                                <i class="fa-solid fa-trash"></i> Eliminar
-                            </button>
+                                   @if (auth()->user()->role === 'admin')
+    <button wire:click="eliminar({{ $producto->id }})"
+        wire:confirm="Seguro que queres eliminar este producto?"
+        class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-full text-xs transition">
+        <i class="fa-solid fa-trash"></i> Eliminar
+    </button>
+@endif
                         </td>
                     </tr>
                 @empty

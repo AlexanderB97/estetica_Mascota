@@ -1,8 +1,8 @@
 <div class="p-6">
     <div class="flex justify-between items-center mb-6">
         <div>
-            <h1 class="text-3xl font-bold text-purple-700"><i class="fa-solid fa-address-book mr-2"></i>Clientes</h1>
-            <p class="text-gray-500 text-sm mt-1">Gestioná los datos de contacto de tus clientes</p>
+            <h1 class="text-3xl font-bold text-purple-700"><i class="fa-solid fa-users mr-2"></i>Clientes</h1>
+            <p class="text-gray-500 text-sm mt-1">Gestioná los clientes de la estética</p>
         </div>
         <button wire:click="abrirModal"
             class="bg-purple-600 hover:bg-purple-700 text-white px-5 py-2 rounded-full shadow transition flex items-center gap-2">
@@ -16,9 +16,9 @@
         </div>
     @endif
 
-    <div class="mb-4">
-        <input wire:model.live.debounce.300ms="search" type="text" placeholder="Buscar cliente..."
-            class="border border-gray-200 rounded-lg w-full max-w-sm px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-purple-400" />
+    <div class="bg-white rounded-2xl shadow p-4 mb-4">
+        <input wire:model.live="search" type="text" placeholder="🔍 Buscar cliente..."
+            class="border border-gray-200 rounded-full px-5 py-2 w-full focus:outline-none focus:ring-2 focus:ring-purple-400" />
     </div>
 
     <div class="bg-white rounded-2xl shadow overflow-hidden">
@@ -29,7 +29,6 @@
                     <th class="p-4 text-left">Teléfono</th>
                     <th class="p-4 text-left">Email</th>
                     <th class="p-4 text-left">Dirección</th>
-                    <th class="p-4 text-left">Mascotas</th>
                     <th class="p-4 text-left">Acciones</th>
                 </tr>
             </thead>
@@ -37,30 +36,30 @@
                 @forelse ($clientes as $cliente)
                     <tr class="border-t hover:bg-purple-50 transition">
                         <td class="p-4 font-medium text-gray-800">
-                            <i class="fa-solid fa-user text-gray-400 mr-1"></i>{{ $cliente->nombre }}
+                            <i class="fa-solid fa-user text-purple-400 mr-1"></i>
+                            {{ $cliente->nombre }} {{ $cliente->apellido }}
                         </td>
-                        <td class="p-4 text-gray-600">{{ $cliente->telefono ?? '—' }}</td>
-                        <td class="p-4 text-gray-600">{{ $cliente->email ?? '—' }}</td>
-                        <td class="p-4 text-gray-600">{{ $cliente->direccion ?? '—' }}</td>
-                        <td class="p-4 text-gray-600">{{ $cliente->mascotas()->count() }}</td>
+                        <td class="p-4 text-gray-600">{{ $cliente->telefono ?? '-' }}</td>
+                        <td class="p-4 text-gray-600">{{ $cliente->email ?? '-' }}</td>
+                        <td class="p-4 text-gray-600">{{ $cliente->direccion ?? '-' }}</td>
                         <td class="p-4 flex gap-2">
                             <button wire:click="editar({{ $cliente->id }})"
-                                class="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded-full text-xs transition">
+                                class="bg-amber-400 hover:bg-amber-500 text-white px-3 py-1 rounded-full text-xs transition">
                                 <i class="fa-solid fa-pen"></i> Editar
                             </button>
                             @if (auth()->user()->role === 'admin')
-                                <button wire:click="eliminar({{ $cliente->id }})"
-                                    wire:confirm="Seguro que queres eliminar este cliente? Si tiene mascotas cargadas, tambien se eliminaran."
-                                    class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-full text-xs transition">
-                                    <i class="fa-solid fa-trash"></i> Eliminar
-                                </button>
-                            @endif
+    <button wire:click="eliminar({{ $cliente->id }})"
+        wire:confirm="Seguro que queres eliminar este cliente?"
+        class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-full text-xs transition">
+        <i class="fa-solid fa-trash"></i> Eliminar
+    </button>
+@endif
                         </td>
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="6" class="p-8 text-center text-gray-400">
-                            <i class="fa-solid fa-address-book text-4xl mb-2 block"></i>
+                        <td colspan="5" class="p-8 text-center text-gray-400">
+                            <i class="fa-solid fa-users text-4xl mb-2 block"></i>
                             No hay clientes cargados.
                         </td>
                     </tr>
@@ -75,26 +74,34 @@
 
     @if ($modal)
         <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div class="bg-white rounded-2xl p-6 w-full max-w-lg shadow-2xl">
+            <div class="bg-white rounded-2xl p-6 w-full max-w-md shadow-2xl">
                 <h2 class="text-xl font-bold text-purple-700 mb-4">
-                    <i class="fa-solid fa-address-book mr-2"></i>{{ $clienteId ? 'Editar Cliente' : 'Nuevo Cliente' }}
+                    <i class="fa-solid fa-user mr-2"></i>
+                    @if($clienteId) Editar Cliente @else Nuevo Cliente @endif
                 </h2>
 
-                <div class="mb-4">
-                    <label class="block text-sm text-gray-600 mb-1">Nombre</label>
-                    <input wire:model="nombre" type="text"
-                        class="border border-gray-200 rounded-lg w-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-400" />
-                    @error('nombre') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                <div class="grid grid-cols-2 gap-3 mb-3">
+                    <div>
+                        <label class="block text-sm text-gray-600 mb-1">Nombre</label>
+                        <input wire:model="nombre" type="text"
+                            class="border border-gray-200 rounded-lg w-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-400" />
+                        @error('nombre') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                    </div>
+                    <div>
+                        <label class="block text-sm text-gray-600 mb-1">Apellido</label>
+                        <input wire:model="apellido" type="text"
+                            class="border border-gray-200 rounded-lg w-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-400" />
+                        @error('apellido') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                    </div>
                 </div>
 
-                <div class="mb-4">
+                <div class="mb-3">
                     <label class="block text-sm text-gray-600 mb-1">Teléfono</label>
                     <input wire:model="telefono" type="text"
                         class="border border-gray-200 rounded-lg w-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-400" />
-                    @error('telefono') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
                 </div>
 
-                <div class="mb-4">
+                <div class="mb-3">
                     <label class="block text-sm text-gray-600 mb-1">Email</label>
                     <input wire:model="email" type="email"
                         class="border border-gray-200 rounded-lg w-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-400" />
@@ -105,7 +112,6 @@
                     <label class="block text-sm text-gray-600 mb-1">Dirección</label>
                     <input wire:model="direccion" type="text"
                         class="border border-gray-200 rounded-lg w-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-400" />
-                    @error('direccion') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
                 </div>
 
                 <div class="flex justify-end gap-2">
