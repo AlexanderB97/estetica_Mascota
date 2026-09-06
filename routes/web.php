@@ -47,3 +47,4 @@ Route::get('/reset-opcache-temp-9x7', function () {
     }
     return 'opcache_reset no está disponible en este servidor';
 });
+
